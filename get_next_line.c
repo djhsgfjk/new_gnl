@@ -6,7 +6,7 @@
 /*   By: gsheev <gsheev@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/27 12:15:59 by gsheev            #+#    #+#             */
-/*   Updated: 2022/01/02 21:01:26 by gsheev           ###   ########.fr       */
+/*   Updated: 2022/01/03 16:44:51 by gsheev           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,20 +31,6 @@ static char	*ft_rewrite_buff(char **buff, int a, int b)
 		i++;
 	}
 	return ((*buff));
-}
-
-static int	ft_strlen(char *s)
-{
-	int	i;
-
-	if (s == (char *)0)
-		return (0);
-	i = 0;
-	while (s[i] != '\n' && s[i] != '\0')
-		i++;
-	if (s[i] == '\n')
-		i++;
-	return (i);
 }
 
 static int	ft_strjoin(char **s1, int len1, char **s2, int len2)
@@ -75,49 +61,54 @@ static int	ft_strjoin(char **s1, int len1, char **s2, int len2)
 	return (i);
 }
 
-static char	*get_next_line(int fd)
+static char	*ft_result(int n, char **buff, char **line)
+{
+	free(*buff);
+	*buff = (char *)0;
+	if (n == 0)
+		return (*line);
+	if (*line != (char *)0)
+		free(*line);
+	return ((char *)0);
+}
+
+static int	ft_end_of_line(int n, char *line, int len1, char **buff)
+{
+	int	len2;
+
+	len2 = ft_strlen(*buff);
+	if (len1 > 0 && line[len1 - 1] == '\n')
+	{
+		ft_rewrite_buff(buff, len2, n);
+		return (1);
+	}
+	return (0);
+}
+
+char	*get_next_line(int fd)
 {
 	char		*line;
 	static char	*buff;
 	int			n;
 	int			len;
-	int			buff_len;
 
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return ((char *)0);
 	line = (char *)0;
 	len = 0;
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return ((char *) 0);
+	n = BUFFER_SIZE;
 	if (buff == (char *)0)
-		buff = (char *) malloc((BUFFER_SIZE + 1) * sizeof(char));
-	else
 	{
-		buff_len = ft_strlen(buff);
-		len = ft_strjoin(&line, len, &buff, buff_len);
-		if (len > 0 && line[len - 1] == '\n')
-		{
-			ft_rewrite_buff(&buff, buff_len, BUFFER_SIZE);
-			return (line);
-		}
+		buff = (char *) malloc((BUFFER_SIZE + 1) * sizeof(char));
+		n = read(fd, buff, BUFFER_SIZE);
 	}
-	n = read(fd, buff, BUFFER_SIZE);
 	while (n > 0)
 	{
 		buff[n] = '\0';
-		buff_len = ft_strlen(buff);
-		len = ft_strjoin(&line, len, &buff, buff_len);
-		if (line[len - 1] == '\n')
-		{
-			ft_rewrite_buff(&buff, buff_len, n);
-			n -= buff_len;
+		len = ft_strjoin(&line, len, &buff, ft_strlen(buff));
+		if (ft_end_of_line(n, line, len, &buff))
 			return (line);
-		}
 		n = read(fd, buff, BUFFER_SIZE);
 	}
-	free(buff);
-	buff = (char *)0;
-	if (n == 0)
-		return (line);
-	if (line != (char *)0)
-		free(line);
-	return ((char *)0);
+	return (ft_result(n, &buff, &line));
 }

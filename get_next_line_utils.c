@@ -31,3 +31,17 @@ void	ft_clear_line(t_line *line)
 		free(line->s);
 	free(line);
 }
+
+int	ft_strlen(char *s)
+{
+	int	i;
+
+	if (s == (char *)0)
+		return (0);
+	i = 0;
+	while (s[i] != '\n' && s[i] != '\0')
+		i++;
+	if (s[i] == '\n')
+		i++;
+	return (i);
+}

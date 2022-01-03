@@ -22,8 +22,9 @@ typedef struct s_line
 	int		len;
 }	t_line;
 
-char	*get_next_line(int fd);
 t_line	*ft_create_elem(int fd, char *s, int len);
 void	ft_clear_line(t_line *line);
+int		ft_strlen(char *s);
+char	*get_next_line(int fd);
 
 #endif
