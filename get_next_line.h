@@ -6,7 +6,7 @@
 /*   By: gsheev <gsheev@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/27 12:16:07 by gsheev            #+#    #+#             */
-/*   Updated: 2022/01/02 16:40:51 by gsheev           ###   ########.fr       */
+/*   Updated: 2022/01/03 16:50:33 by gsheev           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,11 @@
 # include <unistd.h>
 # include <stdlib.h>
 
-typedef struct s_line
-{
-	int		fd;
-	char	*s;
-	int		len;
-}	t_line;
-
-t_line	*ft_create_elem(int fd, char *s, int len);
-void	ft_clear_line(t_line *line);
 int		ft_strlen(char *s);
+char	*ft_rewrite_buff(char **buff, int a, int b);
+int		ft_strjoin(char **s1, int len1, char **s2, int len2);
+char	*ft_result(int n, char **buff, char **line);
+int		ft_end_of_line(int n, char *line, int len1, char **buff);
 char	*get_next_line(int fd);
 
 #endif
